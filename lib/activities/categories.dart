@@ -20,6 +20,9 @@ class Categories extends StatefulWidget {
 
 class CategoriesState extends State<Categories> {
   late Future<List<Category>> futureCategories;
+  final _formKey = GlobalKey<FormState>();
+  late Category selectCategory;
+
   Future<List<Category>> fetchCategories() async {
     http.Response response = await http.get(Uri.parse(
         'http://192.168.10.15/Laravel-Flutter-Course-API/public/api/categories'));
@@ -54,28 +57,55 @@ class CategoriesState extends State<Categories> {
                               return ListTile(
                                 trailing: IconButton(
                                     onPressed: () {
+                                      selectCategory = category;
                                       showModalBottomSheet(
                                           context: context,
                                           builder: (context) {
                                             return Padding(
                                               padding: EdgeInsets.all(10),
-                                              child: Column(
-                                                children: <Widget>[
-                                                  TextFormField(
-                                                    initialValue: category.name,
-                                                    decoration: InputDecoration(
-                                                      labelText:
-                                                          'Category Name',
-                                                    ),
-                                                  ),
-                                                  Text(category.name),
-                                                  ElevatedButton(
-                                                      onPressed: () =>
-                                                          Navigator.pop(
-                                                              context),
-                                                      child: Text('Close'))
-                                                ],
-                                              ),
+                                              child: Form(
+                                                  key: _formKey,
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      TextFormField(
+                                                        initialValue:
+                                                            category.name,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          border:
+                                                              OutlineInputBorder(),
+                                                          labelText:
+                                                              'Category Name',
+                                                        ),
+                                                      ),
+                                                      Text(category.name),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceEvenly,
+                                                        children: <Widget>[
+                                                          ElevatedButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                              child:
+                                                                  Text('Save')),
+                                                          ElevatedButton(
+                                                              style: ButtonStyle(
+                                                                  backgroundColor:
+                                                                      MaterialStateProperty.all<Color>(
+                                                                          Colors
+                                                                              .black12)),
+                                                              onPressed: () =>
+                                                                  Navigator.pop(
+                                                                      context),
+                                                              child:
+                                                                  Text('Close'))
+                                                        ],
+                                                      )
+                                                    ],
+                                                  )),
                                             );
                                           });
                                     },
