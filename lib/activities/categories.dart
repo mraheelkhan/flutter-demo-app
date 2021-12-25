@@ -1,57 +1,27 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app2/models/category.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_app2/services/Api.dart';
 import 'dart:convert';
+
+import 'package:flutter_app2/widgets/CategoryEdit.dart';
 
 class Categories extends StatefulWidget {
   @override
-  CategoriesState createState() => CategoriesState();
+  _CategoriesState createState() => _CategoriesState();
 }
 
-class CategoriesState extends State<Categories> {
+class _CategoriesState extends State<Categories> {
   late Future<List<Category>> futureCategories;
-  final _formKey = GlobalKey<FormState>();
-  late Category selectCategory;
-  final categoryNameController = TextEditingController();
-
-  Future<List<Category>> fetchCategories() async {
-    http.Response response = await http.get(Uri.parse(
-        'http://192.168.10.15/Laravel-Flutter-Course-API/public/api/categories'));
-
-    List categories = jsonDecode(response.body);
-
-    return categories.map((category) => Category.fromJson(category)).toList();
-  }
-
-  Future saveCategory() async {
-    final form = _formKey.currentState;
-
-    if (!form!.validate()) {
-      return;
-    }
-
-    String uri =
-        'http://192.168.10.15/Laravel-Flutter-Course-API/public/api/categories/' +
-            selectCategory.id.toString();
-
-    http.Response response = await http.put(Uri.parse(uri),
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json',
-          HttpHeaders.acceptHeader: 'application/json',
-        },
-        body: jsonEncode({'name': categoryNameController.text}));
-
-    Navigator.pop(context);
-  }
+  ApiService apiService = ApiService();
 
   @override
   void initState() {
     super.initState();
-    futureCategories = fetchCategories();
+    futureCategories = apiService.fetchCategories();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -71,61 +41,11 @@ class CategoriesState extends State<Categories> {
                               return ListTile(
                                 trailing: IconButton(
                                     onPressed: () {
-                                      selectCategory = category;
-                                      categoryNameController.text =
-                                          category.name;
-
                                       showModalBottomSheet(
                                           context: context,
+                                          isScrollControlled: true,
                                           builder: (context) {
-                                            return Padding(
-                                              padding: EdgeInsets.all(10),
-                                              child: Form(
-                                                  key: _formKey,
-                                                  child: Column(
-                                                    children: <Widget>[
-                                                      TextFormField(
-                                                        controller:
-                                                            categoryNameController,
-                                                        //initialValue:
-                                                        //    category.name,
-                                                        validator:
-                                                            (String? value) {
-                                                          if (value!.isEmpty) {
-                                                            return 'Enter category Name';
-                                                          }
-                                                          if (value!.length <=
-                                                              3) {
-                                                            return 'Category name should be greater than 3 letters.';
-                                                          }
-                                                          return null;
-                                                        },
-                                                        decoration:
-                                                            InputDecoration(
-                                                          border:
-                                                              OutlineInputBorder(),
-                                                          labelText:
-                                                              'Category Name',
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  top: 20),
-                                                          child: ElevatedButton(
-                                                              onPressed: () {
-                                                                saveCategory();
-                                                              },
-                                                              child: Text(
-                                                                  'Save'))),
-                                                      TextButton(
-                                                          onPressed: () =>
-                                                              Navigator.pop(
-                                                                  context),
-                                                          child: Text('Close')),
-                                                    ],
-                                                  )),
-                                            );
+                                            return CategoryEdit(category);
                                           });
                                     },
                                     icon: Icon(
