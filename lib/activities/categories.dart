@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -22,6 +24,7 @@ class CategoriesState extends State<Categories> {
   late Future<List<Category>> futureCategories;
   final _formKey = GlobalKey<FormState>();
   late Category selectCategory;
+  final categoryNameController = TextEditingController();
 
   Future<List<Category>> fetchCategories() async {
     http.Response response = await http.get(Uri.parse(
@@ -30,6 +33,21 @@ class CategoriesState extends State<Categories> {
     List categories = jsonDecode(response.body);
 
     return categories.map((category) => Category.fromJson(category)).toList();
+  }
+
+  Future saveCategory() async {
+    String uri =
+        'http://192.168.10.15/Laravel-Flutter-Course-API/public/api/categories/' +
+            selectCategory.id.toString();
+
+    http.Response response = await http.put(Uri.parse(uri),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.acceptHeader: 'application/json',
+        },
+        body: jsonEncode({'name': categoryNameController.text}));
+    print(response.toString());
+    Navigator.pop(context);
   }
 
   @override
@@ -58,6 +76,9 @@ class CategoriesState extends State<Categories> {
                                 trailing: IconButton(
                                     onPressed: () {
                                       selectCategory = category;
+                                      categoryNameController.text =
+                                          category.name;
+
                                       showModalBottomSheet(
                                           context: context,
                                           builder: (context) {
@@ -68,8 +89,10 @@ class CategoriesState extends State<Categories> {
                                                   child: Column(
                                                     children: <Widget>[
                                                       TextFormField(
-                                                        initialValue:
-                                                            category.name,
+                                                        controller:
+                                                            categoryNameController,
+                                                        //initialValue:
+                                                        //    category.name,
                                                         decoration:
                                                             InputDecoration(
                                                           border:
@@ -78,32 +101,21 @@ class CategoriesState extends State<Categories> {
                                                               'Category Name',
                                                         ),
                                                       ),
-                                                      Text(category.name),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceEvenly,
-                                                        children: <Widget>[
-                                                          ElevatedButton(
+                                                      Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 20),
+                                                          child: ElevatedButton(
                                                               onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
+                                                                saveCategory();
                                                               },
-                                                              child:
-                                                                  Text('Save')),
-                                                          ElevatedButton(
-                                                              style: ButtonStyle(
-                                                                  backgroundColor:
-                                                                      MaterialStateProperty.all<Color>(
-                                                                          Colors
-                                                                              .black12)),
-                                                              onPressed: () =>
-                                                                  Navigator.pop(
-                                                                      context),
-                                                              child:
-                                                                  Text('Close'))
-                                                        ],
-                                                      )
+                                                              child: Text(
+                                                                  'Save'))),
+                                                      TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  context),
+                                                          child: Text('Close')),
                                                     ],
                                                   )),
                                             );
