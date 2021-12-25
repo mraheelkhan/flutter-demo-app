@@ -1,19 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app2/models/category.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-class Category {
-  int id;
-  String name;
-
-  Category({required this.id, required this.name});
-
-  factory Category.fromJson(Map<String, dynamic> json) {
-    return Category(id: json['id'], name: json['name']);
-  }
-}
 
 class Categories extends StatefulWidget {
   @override
@@ -52,7 +42,7 @@ class CategoriesState extends State<Categories> {
           HttpHeaders.acceptHeader: 'application/json',
         },
         body: jsonEncode({'name': categoryNameController.text}));
-    print(response.toString());
+
     Navigator.pop(context);
   }
 
