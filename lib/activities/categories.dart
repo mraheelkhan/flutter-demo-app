@@ -36,6 +36,12 @@ class CategoriesState extends State<Categories> {
   }
 
   Future saveCategory() async {
+    final form = _formKey.currentState;
+
+    if (!form!.validate()) {
+      return;
+    }
+
     String uri =
         'http://192.168.10.15/Laravel-Flutter-Course-API/public/api/categories/' +
             selectCategory.id.toString();
@@ -93,6 +99,17 @@ class CategoriesState extends State<Categories> {
                                                             categoryNameController,
                                                         //initialValue:
                                                         //    category.name,
+                                                        validator:
+                                                            (String? value) {
+                                                          if (value!.isEmpty) {
+                                                            return 'Enter category Name';
+                                                          }
+                                                          if (value!.length <=
+                                                              3) {
+                                                            return 'Category name should be greater than 3 letters.';
+                                                          }
+                                                          return null;
+                                                        },
                                                         decoration:
                                                             InputDecoration(
                                                           border:
