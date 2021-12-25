@@ -53,7 +53,32 @@ class CategoriesState extends State<Categories> {
                               Category category = snapshot.data![index];
                               return ListTile(
                                 trailing: IconButton(
-                                    onPressed: () => {print(category.name)},
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) {
+                                            return Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child: Column(
+                                                children: <Widget>[
+                                                  TextFormField(
+                                                    initialValue: category.name,
+                                                    decoration: InputDecoration(
+                                                      labelText:
+                                                          'Category Name',
+                                                    ),
+                                                  ),
+                                                  Text(category.name),
+                                                  ElevatedButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context),
+                                                      child: Text('Close'))
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                    },
                                     icon: Icon(
                                       Icons.edit,
                                       color: Colors.white,
