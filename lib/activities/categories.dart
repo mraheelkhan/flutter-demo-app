@@ -30,26 +30,65 @@ class _CategoriesState extends State<Categories> {
                     itemBuilder: (BuildContext context, int index) {
                       Category category = categories[index];
                       return ListTile(
-                        title: Text(
-                          category.name,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        trailing: IconButton(
-                            onPressed: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (context) {
-                                    return CategoryEdit(
-                                        category, provider.updateCategory);
-                                  });
-                            },
-                            icon: Icon(
-                              Icons.edit,
-                              color: Colors.white,
-                              size: 24.0,
-                            )),
-                      );
+                          title: Text(
+                            category.name,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (context) {
+                                          return CategoryEdit(category,
+                                              provider.updateCategory);
+                                        });
+                                  },
+                                  icon: Icon(
+                                    Icons.edit,
+                                    color: Colors.white,
+                                    size: 24.0,
+                                  )),
+                              IconButton(
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text('Confirmation'),
+                                            content:
+                                                Text('Do you want to delete?'),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () =>
+                                                      deleteCategory(
+                                                          provider
+                                                              .deleteCategory,
+                                                          category),
+                                                  child: Text('Delete')),
+                                              TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: Text('Cancel')),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                    size: 24.0,
+                                  ))
+                            ],
+                          ));
                     }))));
+  }
+
+  Future deleteCategory(Function callback, Category category) async {
+    await callback(category);
+    Navigator.pop(context);
   }
 }
