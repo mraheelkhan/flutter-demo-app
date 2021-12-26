@@ -7,8 +7,9 @@ import 'dart:convert';
 
 class CategoryEdit extends StatefulWidget {
   final Category category;
-
-  CategoryEdit(this.category, {Key? key}) : super(key: key);
+  final Function categoryCallback;
+  CategoryEdit(this.category, this.categoryCallback, {Key? key})
+      : super(key: key);
 
   @override
   _CategoryEditState createState() => _CategoryEditState();
@@ -33,15 +34,10 @@ class _CategoryEditState extends State<CategoryEdit> {
       return;
     }
 
-    apiService
-        .updateCategory(
-            widget.category.id, categoryNameController.text.toString())
-        .then((Category category) => Navigator.pop(context))
-        .catchError((exeception) {
-      setState(() {
-        errorMessage = exeception.toString();
-      });
-    });
+    widget.category.name = categoryNameController.text;
+
+    await widget.categoryCallback(widget.category);
+    Navigator.pop(context);
   }
 
   Widget build(BuildContext context) {
@@ -64,7 +60,7 @@ class _CategoryEditState extends State<CategoryEdit> {
                       if (value!.isEmpty) {
                         return 'Enter category Name';
                       }
-                      if (value!.length <= 3) {
+                      if (value.length <= 3) {
                         return 'Category name should be greater than 3 letters.';
                       }
                       return null;
