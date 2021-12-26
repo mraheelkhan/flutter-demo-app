@@ -5,8 +5,6 @@ import 'package:flutter_app2/models/category.dart';
 import 'package:flutter_app2/services/Api.dart';
 import 'dart:convert';
 
-import 'package:flutter_app2/widgets/Utils.dart';
-
 class CategoryAdd extends StatefulWidget {
   final Function categoryCallback;
   CategoryAdd(this.categoryCallback, {Key? key}) : super(key: key);
