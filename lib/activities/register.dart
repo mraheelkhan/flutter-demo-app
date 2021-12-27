@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_app2/providers/AuthProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
+import 'package:device_info/device_info.dart';
 
 class Register extends StatefulWidget {
   Register();
@@ -10,6 +13,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   final nameController = TextEditingController();
@@ -18,6 +22,36 @@ class _RegisterState extends State<Register> {
   final passwordConfirmController = TextEditingController();
 
   String errorMessage = '';
+
+  late String deviceName;
+
+  @override
+  void initState() {
+    super.initState();
+    getDeviceName();
+  }
+
+  Future<void> getDeviceName() async {
+    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
+    try {
+      if (Platform.isAndroid) {
+        var build = await deviceInfoPlugin.androidInfo;
+        setState(() {
+          deviceName = build.model;
+        });
+      } else if (Platform.isIOS) {
+        var build = await deviceInfoPlugin.iosInfo;
+        setState(() {
+          deviceName = build.model;
+        });
+      }
+    } on PlatformException {
+      setState(() {
+        deviceName = 'Failed to get platform version';
+      });
+    }
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,7 +178,8 @@ class _RegisterState extends State<Register> {
           emailController.text,
           passwordController.text,
           passwordConfirmController.text,
-          'some device name');
+          deviceName);
+
       Navigator.pop(context);
     } catch (Exception) {
       setState(() {
