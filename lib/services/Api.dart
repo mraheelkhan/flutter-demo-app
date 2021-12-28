@@ -5,8 +5,14 @@ import 'package:flutter_app2/models/category.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
+  late String token;
+
+  ApiService(String token) {
+    this.token = token;
+  }
+
   final String baseUrl =
-      'http://192.168.10.9/Laravel-Flutter-Course-API/public/api/';
+      'http://192.168.1.190/Laravel-Flutter-Course-API/public/api/';
 
   Future<List<Category>> fetchCategories() async {
     http.Response response = await http.get(Uri.parse(baseUrl + 'categories'));
@@ -23,6 +29,7 @@ class ApiService {
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
           HttpHeaders.acceptHeader: 'application/json',
+          HttpHeaders.authorizationHeader: 'Bearer $token'
         },
         body: jsonEncode({'name': name}));
     if (response.statusCode != 201) {
@@ -39,6 +46,7 @@ class ApiService {
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
           HttpHeaders.acceptHeader: 'application/json',
+          HttpHeaders.authorizationHeader: 'Bearer $token'
         },
         body: jsonEncode({'name': category.name}));
 
@@ -52,7 +60,14 @@ class ApiService {
   Future<void> deleteCategory(int id) async {
     String uri = baseUrl + 'categories/' + id.toString();
 
-    http.Response response = await http.delete(Uri.parse(uri));
+    http.Response response = await http.delete(
+      Uri.parse(uri),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        HttpHeaders.acceptHeader: 'application/json',
+        HttpHeaders.authorizationHeader: 'Bearer $token'
+      },
+    );
     if (response.statusCode != 204) {
       throw Exception('Something went wrong while deleting! Error code: ' +
           response.statusCode.toString());

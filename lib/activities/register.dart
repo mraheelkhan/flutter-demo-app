@@ -53,6 +53,7 @@ class _RegisterState extends State<Register> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -173,12 +174,8 @@ class _RegisterState extends State<Register> {
         Provider.of<AuthProvider>(context, listen: false);
 
     try {
-      String token = await authProvider.register(
-          nameController.text,
-          emailController.text,
-          passwordController.text,
-          passwordConfirmController.text,
-          deviceName);
+      await authProvider.register(nameController.text, emailController.text,
+          passwordController.text, passwordConfirmController.text, deviceName);
 
       Navigator.pop(context);
     } catch (Exception) {
