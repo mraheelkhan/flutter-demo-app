@@ -13,7 +13,6 @@ class CategoryProvider extends ChangeNotifier {
     this.authProvider = authProvider;
     this.apiService = ApiService(authProvider.token);
     // this line above is the main part
-
     init();
   }
 
@@ -24,7 +23,6 @@ class CategoryProvider extends ChangeNotifier {
 
   Future init() async {
     categories = await apiService.fetchCategories();
-    print("categories" + categories.toString());
     notifyListeners();
   }
 
@@ -36,6 +34,7 @@ class CategoryProvider extends ChangeNotifier {
       notifyListeners();
     } catch (Exception) {
       print(Exception);
+      await authProvider.logOut();
     }
   }
 
@@ -49,6 +48,7 @@ class CategoryProvider extends ChangeNotifier {
       notifyListeners();
     } catch (Exception) {
       print(Exception);
+      await authProvider.logOut();
     }
   }
 
@@ -60,6 +60,7 @@ class CategoryProvider extends ChangeNotifier {
       notifyListeners();
     } catch (Exception) {
       print(Exception);
+      await authProvider.logOut();
     }
   }
 }

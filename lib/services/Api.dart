@@ -12,10 +12,17 @@ class ApiService {
   }
 
   final String baseUrl =
-      'http://192.168.1.190/Laravel-Flutter-Course-API/public/api/';
+      'http://192.168.8.105/Laravel-Flutter-Course-API/public/api/';
 
   Future<List<Category>> fetchCategories() async {
-    http.Response response = await http.get(Uri.parse(baseUrl + 'categories'));
+    http.Response response = await http.get(
+      Uri.parse(baseUrl + 'categories'),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        HttpHeaders.acceptHeader: 'application/json',
+        HttpHeaders.authorizationHeader: 'Bearer $token'
+      },
+    );
 
     List categories = jsonDecode(response.body);
 

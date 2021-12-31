@@ -12,13 +12,11 @@ class AuthProvider extends ChangeNotifier {
       String confirmPassword, String deviceName) async {
     token = await apiService.register(
         name, email, password, confirmPassword, deviceName);
-
     isAuthenticated = true;
   }
 
   Future<void> login(String email, String password, String deviceName) async {
     token = await apiService.login(email, password, deviceName);
-
     isAuthenticated = true;
   }
 
