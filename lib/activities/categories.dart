@@ -19,8 +19,6 @@ class _CategoriesState extends State<Categories> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<CategoryProvider>(context);
-    final AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: true);
 
     List<Category> categories = provider.categories;
     return Scaffold(
@@ -90,8 +88,6 @@ class _CategoriesState extends State<Categories> {
           )),
       floatingActionButton: new FloatingActionButton(
           onPressed: () {
-            authProvider.logOut();
-
             showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,

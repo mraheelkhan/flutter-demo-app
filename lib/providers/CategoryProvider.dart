@@ -34,7 +34,6 @@ class CategoryProvider extends ChangeNotifier {
       notifyListeners();
     } catch (Exception) {
       print(Exception);
-      await authProvider.logOut();
     }
   }
 
@@ -48,7 +47,6 @@ class CategoryProvider extends ChangeNotifier {
       notifyListeners();
     } catch (Exception) {
       print(Exception);
-      await authProvider.logOut();
     }
   }
 
@@ -60,7 +58,6 @@ class CategoryProvider extends ChangeNotifier {
       notifyListeners();
     } catch (Exception) {
       print(Exception);
-      await authProvider.logOut();
     }
   }
 }
